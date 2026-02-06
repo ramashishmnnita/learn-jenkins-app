@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('my-aws-iam-user')
+        AWS_ACCESS_SECRET_KEY_ID = credentials('my-aws-iam-user')
+    }
+
     stages {
         stage('AWS') {
             agent {
@@ -10,10 +15,12 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                    aws --version
-                    aws s3 ls
-                '''
+                withCredentials([usernamePassword(credentialsId: 'my-aws-iam-user', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        aws s3 ls
+                    '''
+                }
             }
         }
     }
