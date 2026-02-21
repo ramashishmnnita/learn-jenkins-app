@@ -34,8 +34,8 @@ pipeline {
 
             steps {
                 sh '''
-                    sudo apt-get update
-                    sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+                    apt-get update
+                    apt-get install docker-ce docker-ce-cli containerd.io -y
                     docker version
                     docker build -t myjenkinsapp .
                 '''
