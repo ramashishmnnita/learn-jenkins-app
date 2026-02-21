@@ -26,11 +26,10 @@ pipeline {
                 }
             }
             steps {
-                echo "Hello2"
-                // sh '''
-                //     amazon-linux-extras install docker
-                //     docker build -t myjenkinsapp .
-                // '''
+                sh '''
+                    amazon-linux-extras install docker
+                    docker build -t myjenkinsapp .
+                '''
             }
         }
 
