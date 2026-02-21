@@ -2,6 +2,8 @@ pipeline {
     agent any
 
     environment {
+        REACT_APP_VERSION = "1.0.$BUILD_ID"
+        APP_NAME = 'learnjenkinsapp'
         AWS_ACCESS_KEY_ID = credentials('my-aws-iam-user')
         AWS_ACCESS_SECRET_KEY_ID = credentials('my-aws-iam-user')
         AWS_DEFAULT_REGION = 'ap-south-1'
@@ -13,6 +15,7 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
+                echo $REACT_APP_VERSION
                 sh 'docker build -f ci/Dockerfile-aws-cli -t my-aws-cli .'
             }
         }
@@ -39,31 +42,31 @@ pipeline {
 
             steps {
                 sh '''
-                    docker build -t myjenkinsapp .
+                    docker build -t $APP_NAME:$REACT_APP_VERSION .
                 '''
             }
         }
 
-        // stage('Deploy to AWS') {
-        //     agent {
-        //         docker {
-        //             image 'my-aws-cli'
-        //             reuseNode true
-        //             args "-u root --entrypoint=''"
-        //         }
-        //     }
+        stage('Deploy to AWS') {
+            agent {
+                docker {
+                    image 'my-aws-cli'
+                    reuseNode true
+                    args "-u root --entrypoint=''"
+                }
+            }
 
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'my-aws-iam-user', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-        //             sh '''
-        //                 aws --version
-        //                 LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
-        //                 echo $LATEST_TD_REVISION
-        //                 aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE --task-definition $AWS_ECS_TASK_DEF:$LATEST_TD_REVISION
-        //                 aws ecs wait services-stable --cluster $AWS_ECS_CLUSTER --services $AWS_ECS_SERVICE
-        //             '''
-        //         }
-        //     }
-        // }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'my-aws-iam-user', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
+                        echo $LATEST_TD_REVISION
+                        aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE --task-definition $AWS_ECS_TASK_DEF:$LATEST_TD_REVISION
+                        aws ecs wait services-stable --cluster $AWS_ECS_CLUSTER --services $AWS_ECS_SERVICE
+                    '''
+                }
+            }
+        }
     }
 }
