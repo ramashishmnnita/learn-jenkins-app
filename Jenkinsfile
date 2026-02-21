@@ -31,6 +31,7 @@ pipeline {
                     args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
                 }
             }
+
             steps {
                 sh '''
                     amazon-linux-extras install docker
