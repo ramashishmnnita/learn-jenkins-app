@@ -24,12 +24,12 @@ pipeline {
                     args "-u root --entrypoint=''"
                 }
             }
-            steps {
-                sh '''
-                    amazon-linux-extras install docker
-                    docker build -t myjenkinsapp .
-                '''
-            }
+            // steps {
+            //     sh '''
+            //         amazon-linux-extras install docker
+            //         docker build -t myjenkinsapp .
+            //     '''
+            // }
         }
 
         stage('Deploy to AWS') {
