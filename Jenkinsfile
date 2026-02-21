@@ -13,9 +13,9 @@ pipeline {
     }
 
     stages {
-        stage('Build Docker Image') {
+        stage('Build Base Image') {
             steps {
-                echo $REACT_APP_VERSION
+                echo "${REACT_APP_VERSION}"
                 sh 'docker build -f ci/Dockerfile-aws-cli -t my-aws-cli .'
             }
         }
