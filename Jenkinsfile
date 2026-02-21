@@ -39,8 +39,6 @@ pipeline {
                     systemctl enable docker
                     /usr/lib/systemd/system/docker.service start docker
                     usermod -aG docker jenkins
-
-                    amazon-linux-extras install docker
                     docker build -t myjenkinsapp .
                 '''
             }
