@@ -34,10 +34,7 @@ pipeline {
 
             steps {
                 sh '''
-                    whoami
-                    apt-get update
-                    apt-get install docker-ce docker-ce-cli containerd.io -y
-                    docker version
+                    amazon-linux-extras install docker
                     docker build -t myjenkinsapp .
                 '''
             }
