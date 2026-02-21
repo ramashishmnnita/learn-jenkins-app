@@ -36,7 +36,7 @@ pipeline {
                 sh '''
                     yum update -y
                     yum install -y docker
-                    service enable docker
+                    systemctl enable docker
                     service start docker
                     usermod -aG docker jenkins
 
