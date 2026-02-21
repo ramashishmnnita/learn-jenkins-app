@@ -12,9 +12,9 @@ pipeline {
 
     stages {
 
-        stage('Build') {
+        // stage('Build') {
 
-        }
+        // }
 
         stage('Build Docker image') {
             agent {
