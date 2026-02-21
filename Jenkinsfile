@@ -15,8 +15,25 @@ pipeline {
             steps {
                 echo "Hello"
             }
-
         }
+
+        stage('Build Docker image') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    reuseNode true
+                    args "-u root --entrypoint=''"
+                }
+            }
+            steps {
+                echo "Hello2"
+                // sh '''
+                //     amazon-linux-extras install docker
+                //     docker build -t myjenkinsapp .
+                // '''
+            }
+        }
+
         // stage('Deploy to AWS') {
         //     agent {
         //         docker {
