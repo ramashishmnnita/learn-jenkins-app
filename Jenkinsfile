@@ -7,19 +7,22 @@ pipeline {
     }
 
     stages {
-        stage('AWS') {
+        stage('Deploy to AWS') {
             agent {
                 docker {
                     image 'amazon/aws-cli'
+                    reuseNode true
                     args "--entrypoint=''"
                 }
+            }
+            environment {
+
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'my-aws-iam-user', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
-                        echo "Hello S3!" > index.html
-                        aws s3 cp index.html s3://myjenkins-files/index.html
+                        aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
                     '''
                 }
             }
