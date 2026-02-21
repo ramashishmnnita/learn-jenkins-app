@@ -37,7 +37,7 @@ pipeline {
                     yum update -y
                     yum install -y docker
                     systemctl enable docker
-                    service start docker
+                    /usr/lib/systemd/system/docker.service start docker
                     usermod -aG docker jenkins
 
                     amazon-linux-extras install docker
