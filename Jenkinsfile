@@ -11,6 +11,11 @@ pipeline {
     }
 
     stages {
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -f ci/Dockerfile-aws-cli -t my-aws-cli .'
+            }
+        }
         stage('Build') {
             agent {
                 docker {
@@ -26,7 +31,7 @@ pipeline {
         stage('Build Docker image') {
             agent {
                 docker {
-                    image 'amazon/aws-cli'
+                    image 'my-aws-cli'
                     reuseNode true
                     args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
                 }
@@ -34,7 +39,6 @@ pipeline {
 
             steps {
                 sh '''
-                    yum update -y && yum install -y docker jq && yum clean all
                     docker build -t myjenkinsapp .
                 '''
             }
@@ -43,7 +47,7 @@ pipeline {
         // stage('Deploy to AWS') {
         //     agent {
         //         docker {
-        //             image 'amazon/aws-cli'
+        //             image 'my-aws-cli'
         //             reuseNode true
         //             args "-u root --entrypoint=''"
         //         }
@@ -53,7 +57,6 @@ pipeline {
         //         withCredentials([usernamePassword(credentialsId: 'my-aws-iam-user', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
         //             sh '''
         //                 aws --version
-        //                 yum install jq -y
         //                 LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
         //                 echo $LATEST_TD_REVISION
         //                 aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE --task-definition $AWS_ECS_TASK_DEF:$LATEST_TD_REVISION
