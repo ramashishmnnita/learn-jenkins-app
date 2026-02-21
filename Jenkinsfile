@@ -12,6 +12,9 @@ pipeline {
 
     stages {
         stage('Build') {
+            steps {
+                echo "Hello"
+            }
 
         }
         // stage('Deploy to AWS') {
