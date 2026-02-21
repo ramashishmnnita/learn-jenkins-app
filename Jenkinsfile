@@ -34,8 +34,9 @@ pipeline {
 
             steps {
                 sh '''
-                    yum update -y
-                    yum install -y docker
+                    sudo apt-get update
+                    sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+                    docker version
                     docker build -t myjenkinsapp .
                 '''
             }
