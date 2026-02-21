@@ -37,7 +37,7 @@ pipeline {
                     yum update -y
                     yum install -y docker
                     systemctl enable docker
-                    /usr/lib/systemd/system/docker.service start docker
+                    sudo /usr/lib/systemd/system/docker.service start docker
                     usermod -aG docker jenkins
                     docker build -t myjenkinsapp .
                 '''
